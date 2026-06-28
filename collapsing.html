@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Collapsing Boundaries – Beginner's Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #181c27;
+    --surface2: #1e2333;
+    --border: #2a3050;
+    --accent: #6c8ef5;
+    --accent2: #f56c6c;
+    --accent3: #6cf5b8;
+    --accent4: #f5c16c;
+    --text: #e8ecf5;
+    --muted: #8890aa;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 15px;
+  }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, #1a2040 0%, #0f1117 60%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 36px;
+    text-align: center;
+  }
+  header .tag {
+    display: inline-block;
+    background: rgba(108,142,245,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(108,142,245,0.3);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    margin-bottom: 18px;
+  }
+  header h1 {
+    font-size: clamp(24px, 4vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(90deg, #a8bcff 0%, #6c8ef5 50%, #9b7dff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  header p {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ── Nav ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15,17,23,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 14px 16px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  nav button:hover { color: var(--text); }
+  nav button.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── Layout ── */
+  main { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .section { display: none; }
+  .section.visible { display: block; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 24px;
+  }
+  .card.highlight {
+    border-color: rgba(108,142,245,0.4);
+    background: linear-gradient(135deg, rgba(108,142,245,0.06) 0%, var(--surface) 100%);
+  }
+  .card h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 20px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-size: 12px;
+  }
+  .card p { color: #c0c8e0; margin-bottom: 12px; }
+  .card p:last-child { margin-bottom: 0; }
+
+  /* ── Term boxes ── */
+  .term-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media(max-width:600px){ .term-grid { grid-template-columns: 1fr; } }
+
+  .term-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .term-box .term-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent4);
+    margin-bottom: 4px;
+  }
+  .term-box .term-symbol {
+    font-family: 'Fira Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    opacity: 0.8;
+  }
+  .term-box p { font-size: 13px; color: var(--muted); margin: 0; }
+
+  /* ── Example box ── */
+  .example {
+    background: rgba(108,245,184,0.05);
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 13.5px;
+    color: #a8e8cc;
+  }
+  .example strong { color: var(--accent3); }
+
+  .analogy {
+    background: rgba(245,193,108,0.06);
+    border-left: 3px solid var(--accent4);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 13.5px;
+    color: #e8d4a8;
+  }
+  .analogy strong { color: var(--accent4); }
+
+  .warning {
+    background: rgba(245,108,108,0.06);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 13.5px;
+    color: #e8b8b8;
+  }
+
+  /* ── Canvas visuals ── */
+  .canvas-wrap {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin: 20px 0;
+    text-align: center;
+  }
+  .canvas-wrap canvas { display: block; margin: 0 auto; max-width: 100%; }
+  .canvas-wrap .caption { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+  /* ── Interactive demo ── */
+  .demo-controls {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+    align-items: flex-end;
+  }
+  .slider-group { flex: 1; min-width: 160px; }
+  .slider-group label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+  .slider-group .val { color: var(--accent); font-weight: 600; font-family: 'Fira Mono', monospace; }
+  input[type=range] {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: opacity 0.2s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn.secondary {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  /* ── Flow diagram ── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    justify-content: center;
+  }
+  .flow-step {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    text-align: center;
+    min-width: 110px;
+    max-width: 140px;
+  }
+  .flow-step .num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .flow-step .label { font-size: 13px; font-weight: 600; }
+  .flow-step .sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .flow-arrow {
+    color: var(--muted);
+    font-size: 22px;
+    padding: 0 6px;
+    flex-shrink: 0;
+  }
+  @media(max-width:600px){
+    .flow { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+  }
+
+  /* ── Quiz ── */
+  .quiz-q { margin-bottom: 24px; }
+  .quiz-q p { font-weight: 600; margin-bottom: 10px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-option {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: left;
+  }
+  .quiz-option:hover { border-color: var(--accent); }
+  .quiz-option.correct { background: rgba(108,245,184,0.1); border-color: var(--accent3); color: var(--accent3); }
+  .quiz-option.wrong { background: rgba(245,108,108,0.1); border-color: var(--accent2); color: var(--accent2); }
+  .quiz-feedback { font-size: 13px; margin-top: 10px; min-height: 20px; color: var(--muted); }
+
+  /* ── Step-by-step ── */
+  .steps { counter-reset: step; }
+  .step-item {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 28px;
+    align-items: flex-start;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(108,142,245,0.15);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+  .step-body h4 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .step-body p { font-size: 14px; color: #c0c8e0; }
+
+  /* ── Tabs within card ── */
+  .inner-tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+  .inner-tab {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+  .inner-tab.active { background: var(--accent); border-color: var(--accent); color: white; }
+  .inner-content { display: none; }
+  .inner-content.active { display: block; }
+
+  /* ── Misc ── */
+  .emoji-big { font-size: 28px; margin-right: 8px; }
+  .pill {
+    display: inline-block;
+    background: rgba(108,142,245,0.12);
+    color: var(--accent);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Fira Mono', monospace;
+    padding: 1px 7px;
+  }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  .progress-bar-wrap {
+    background: var(--surface2);
+    border-radius: 20px;
+    height: 6px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #9b7dff);
+    border-radius: 20px;
+    transition: width 0.4s ease;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag">Beginner's Complete Guide</div>
+  <h1>Collapsing Decision Boundaries</h1>
+  <p>A plain-English walkthrough of the project — every technical term explained with real-world analogies.</p>
+</header>
+
+<nav id="nav">
+  <button class="active" onclick="showSection(0)">🧠 The Big Idea</button>
+  <button onclick="showSection(1)">⏱️ RT & Choices</button>
+  <button onclick="showSection(2)">🎯 The DDM Model</button>
+  <button onclick="showSection(3)">📉 Boundaries</button>
+  <button onclick="showSection(4)">🤖 BayesFlow & SBI</button>
+  <button onclick="showSection(5)">🔬 The Full Pipeline</button>
+  <button onclick="showSection(6)">✅ Quick Quiz</button>
+</nav>
+
+<main>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progress" style="width:14%"></div>
+</div>
+
+<!-- ═══════════ SECTION 0: Big Idea ═══════════ -->
+<div class="section visible" id="sec0">
+
+  <div class="card highlight">
+    <h2><span class="emoji-big">🧠</span> What is this project about?</h2>
+    <p>Imagine you're playing a quiz show. A question flashes on screen, and a countdown timer starts ticking. The closer the timer gets to zero, the more pressure you feel to just pick an answer — even if you're not sure.</p>
+    <p>This project tries to <strong>mathematically model that pressure</strong>. It asks: when time is running out, do people change <em>how</em> they make decisions? And if so, can we figure out the mathematical "shape" of that change by looking at how fast and how accurately they respond?</p>
+    <div class="analogy">
+      <strong>🎯 Core analogy:</strong> Think of your brain as a bank account slowly filling with "evidence" about the right answer. Once your evidence balance crosses a threshold (the "decision boundary"), you commit to an answer. This project asks: does that threshold stay fixed, or does it <em>drop</em> as time runs out?
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔑 The Three Big Questions</h2>
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>How do people decide under time pressure?</h4>
+          <p>A study by Katsimpokis et al. (2020) found that <em>how</em> you create time pressure matters. Just telling someone "be fast" leads to different brain behavior than giving them a hard deadline countdown.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>What mathematical shape does the boundary collapse in?</h4>
+          <p>Previous work only tested straight-line (linear) collapse. This project tests curved shapes: an exponential drop-off or an S-shaped (sigmoid) curve. Maybe those fit human behavior better.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Can a computer learn to figure out those shapes automatically?</h4>
+          <p>Instead of doing complex math by hand, we train a neural network to learn the relationship between "behavior patterns" and "model parameters" — then use it to analyze real human data instantly.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📚 The Study it's Based On</h2>
+    <p><strong>Katsimpokis, Hawkins & van Maanen (2020)</strong> ran an experiment where people watched dots moving on a screen (some going left, some going right) and had to quickly say which direction most dots were going.</p>
+    <p>Half the time, participants were just <em>told</em> to be fast. The other half, a real countdown timer enforced a hard deadline.</p>
+    <div class="example">
+      <strong>Finding:</strong> Under verbal speed instructions → a <em>fixed</em> threshold model fit best. Under a hard deadline → a <em>collapsing</em> threshold model fit better. This project asks: can we do even better with a curved (non-linear) collapse?
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════ SECTION 1: RT & Choices ═══════════ -->
+<div class="section" id="sec1">
+
+  <div class="card highlight">
+    <h2><span class="emoji-big">⏱️</span> Response Time (RT) and Choices</h2>
+    <p>Every time a participant makes a decision in the experiment, two things are recorded:</p>
+    <div class="term-grid">
+      <div class="term-box">
+        <div class="term-name">Response Time (RT)</div>
+        <div class="term-symbol">measured in seconds (e.g. 0.45s)</div>
+        <p>How long it took from seeing the stimulus to pressing a button. This is the raw speed of the decision.</p>
+      </div>
+      <div class="term-box">
+        <div class="term-name">Choice</div>
+        <div class="term-symbol">correct = 1 / error = 0</div>
+        <p>Was the answer right or wrong? Together with RT, this tells us about the speed-accuracy trade-off.</p>
+      </div>
+    </div>
+    <div class="example" style="margin-top:16px">
+      <strong>Example data row:</strong> Participant saw dots moving RIGHT. They pressed "right" in 0.38 seconds → RT = 0.38, Choice = 1 (correct).
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔄 Speed-Accuracy Trade-off (SAT)</h2>
+    <p>This is the central tension in every decision: <strong>going faster means making more errors</strong>. You can't maximize both at the same time.</p>
+    <div class="analogy">
+      <strong>🎯 Analogy:</strong> Imagine signing your name. If someone gives you 10 seconds, it looks perfect. If someone gives you 0.5 seconds, it's a scrawl. The faster you go, the sloppier the result. Every decision in the brain works the same way.
+    </div>
+    <hr class="divider">
+    <h3>The two SAT conditions in the experiment</h3>
+    <div class="term-grid">
+      <div class="term-box">
+        <div class="term-name">Speed Instruction</div>
+        <p>Experimenter just <em>tells</em> the person to be fast. No timer. Psychological pressure only. → People stay cautious, threshold stays fixed.</p>
+      </div>
+      <div class="term-box">
+        <div class="term-name">Response Deadline</div>
+        <p>A hard cutoff enforced by the computer. After the deadline, no response is recorded. → People rush as the deadline approaches, threshold collapses.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📊 What does RT data look like?</h2>
+    <p>RT distributions are always <strong>right-skewed</strong>: most responses cluster quickly, but there's a long tail of slow responses. This shape is mathematically predictable — it's one reason we use the DDM model.</p>
+    <div class="canvas-wrap">
+      <canvas id="rtCanvas" width="720" height="200"></canvas>
+      <div class="caption">Typical RT distribution — most decisions happen fast, few take long</div>
+    </div>
+    <div class="term-grid" style="margin-top:16px">
+      <div class="term-box">
+        <div class="term-name">Non-response</div>
+        <div class="term-symbol">RT = NaN, choice = -1</div>
+        <p>If a hard deadline passes before the person responds, we record a "non-response." The model must also produce these at the same rate.</p>
+      </div>
+      <div class="term-box">
+        <div class="term-name">Right-skewed distribution</div>
+        <div class="term-symbol">long tail on the right</div>
+        <p>Most RTs are fast (0.3–0.7s), but occasionally someone takes 1.5s or more. The histogram has a peak left and a long tail right.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════ SECTION 2: DDM ═══════════ -->
+<div class="section" id="sec2">
+
+  <div class="card highlight">
+    <h2><span class="emoji-big">🎯</span> The Diffusion Decision Model (DDM)</h2>
+    <p>The DDM is the main mathematical model used to describe how people make decisions. It imagines that your brain is <strong>accumulating noisy evidence</strong> over time until it hits a threshold.</p>
+    <div class="analogy">
+      <strong>🎯 Analogy — The bank account:</strong> Imagine a bank account that starts at £0. Every millisecond, a small random amount of money is deposited or withdrawn (noise), but overall there's a slight positive drift (the signal). As soon as the balance hits +£100 (upper boundary), you decide "right!" As soon as it hits -£100 (lower boundary), you decide "left!" The time it takes to reach either limit is your Response Time.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔑 The 4 Key Parameters</h2>
+    <p>A parameter is a number that <strong>controls how the model behaves</strong>. Fitting the model means finding which numbers best explain the data.</p>
+    <div class="term-grid">
+      <div class="term-box">
+        <div class="term-name">Drift Rate (v)</div>
+        <div class="term-symbol">v ~ how strong the signal is</div>
+        <p>How fast evidence accumulates on average. High v = easy task (fast, accurate). Low v = hard task (slow, more errors). Can be negative (evidence pulls toward the wrong answer).</p>
+      </div>
+      <div class="term-box">
+        <div class="term-name">Boundary Separation (a)</div>
+        <div class="term-symbol">a ~ how cautious you are</div>
+        <p>The distance from 0 to each decision threshold. Large a = slow but accurate (careful). Small a = fast but risky. <em>This is what collapses over time in our models.</em></p>
+      </div>
+      <div class="term-box">
+        <div class="term-name">Non-Decision Time (t₀)</div>
+        <div class="term-symbol">t₀ ~ reaction + motor time</div>
+        <p>The time spent on things other than the actual decision — seeing the stimulus, moving the finger. Subtracted from total RT to get "pure" decision time.</p>
+      </div>
+      <div class="term-box">
+        <div class="term-name">Starting Point (z)</div>
+        <div class="term-symbol">z ~ prior bias</div>
+        <p>Where evidence accumulation starts. z = 0.5 means unbiased (exactly halfway). z > 0.5 means you're already leaning toward one response before seeing anything.</p>
+      </div>
+    </div>
+    <div class="example" style="margin-top:16px">
+      <strong>Example:</strong> v=2.0, a=1.5, t₀=0.25, z=0.5 → Person is unbiased, moderately cautious, accumulating evidence quickly. Typical RT ≈ 0.5s, accuracy ≈ 85%.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎲 Noisy Evidence — the "Wiener Process"</h2>
+    <p>Evidence doesn't accumulate smoothly — it's <strong>noisy</strong>. Each tiny time step, the evidence changes by: the drift (signal) + a random jiggle (noise).</p>
+    <div class="example">
+      <strong>Math:</strong> dX(t) = v·dt + σ·dW(t)<br><br>
+      In plain English: "the tiny change in evidence = (signal strength × tiny time step) + (noise × random fluctuation)"
+    </div>
+    <p>The <span class="pill">dW(t)</span> part is called a Wiener process (named after mathematician Norbert Wiener). It's just a mathematical description of random jiggling — like the path of a pollen grain floating in water (Brownian motion).</p>
+    <div class="canvas-wrap">
+      <canvas id="ddmCanvas" width="720" height="220"></canvas>
+      <div class="caption">Multiple simulated evidence paths — each hits a boundary at a different time (= different RT)</div>
+    </div>
+    <button class="btn" onclick="drawDDM()">🔄 Simulate Again</button>
+  </div>
+
+  <div class="card">
+    <h2>🧮 Euler-Maruyama: the simulation method</h2>
+    <p>We can't solve the DDM equation perfectly — the math is too complex. Instead, we <strong>approximate it in tiny time steps</strong>.</p>
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Start at X = 0 (or starting point z)</h4>
+          <p>Set a clock to 0ms and evidence to the starting value.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Each 1ms, add drift + random noise</h4>
+          <p>X(t+1ms) = X(t) + v×0.001 + noise×√0.001</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Check if boundary is crossed</h4>
+          <p>If X ≥ +a → record RT, choice = correct. If X ≤ -a → record RT, choice = error.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>Repeat for thousands of simulated trials</h4>
+          <p>This generates a synthetic dataset of (RT, choice) pairs — just like the real experiment, but from our model.</p>
+        </div>
+      </div>
+    </div>
+    <div class="analogy">
+      <strong>🎯 Analogy:</strong> Like a video game that can't run physics continuously, so it recalculates positions 60 times per second instead. The smaller the time step (dt), the more accurate the simulation.
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════ SECTION 3: Boundaries ═══════════ -->
+<div class="section" id="sec3">
+
+  <div class="card highlight">
+    <h2><span class="emoji-big">📉</span> Boundary Functions</h2>
+    <p>The "decision boundary" is the amount of evidence needed before you commit. This project tests different <strong>mathematical shapes</strong> for how that boundary changes over time.</p>
+  </div>
+
+  <div class="card">
+    <h2>🎛️ Interactive: See the Boundaries</h2>
+    <div class="inner-tabs">
+      <button class="inner-tab active" onclick="showBoundary('fixed')">Fixed</button>
+      <button class="inner-tab" onclick="showBoundary('linear')">Linear Collapse</button>
+      <button class="inner-tab" onclick="showBoundary('exponential')">Exponential</button>
+      <button class="inner-tab" onclick="showBoundary('sigmoid')">Sigmoid</button>
+      <button class="inner-tab" onclick="showBoundary('urgency')">Urgency Gate</button>
+    </div>
+
+    <div id="bnd-fixed" class="inner-content active">
+      <p><strong>Fixed boundary:</strong> The threshold never changes. You need the same amount of evidence at t=0.1s as at t=2.0s. Best fits "speed instruction" data.</p>
+      <div class="example"><strong>Formula:</strong> B(t) = a &nbsp;|&nbsp; The boundary is just the constant 'a'.</div>
+    </div>
+    <div id="bnd-linear" class="inner-content">
+      <p><strong>Linear collapse:</strong> The boundary drops at a constant rate — like a straight ramp down. At some point it reaches a minimum floor and stays there.</p>
+      <div class="example"><strong>Formula:</strong> B(t) = max(a − k×t, ε) &nbsp;|&nbsp; 'k' is the collapse rate. 'ε' is the floor so it doesn't reach zero.</div>
+    </div>
+    <div id="bnd-exponential" class="inner-content">
+      <p><strong>Exponential collapse:</strong> The boundary drops sharply at first, then slows down (like a ball rolling off a table and slowing as it settles). It never quite reaches zero.</p>
+      <div class="example"><strong>Formula:</strong> B(t) = a × e^(−λt) &nbsp;|&nbsp; 'λ' (lambda) is the decay rate. Bigger λ = faster early collapse.</div>
+      <div class="analogy"><strong>🎯 Analogy:</strong> Radioactive decay — a substance loses half its atoms very fast initially, then slows. The boundary does the same.</div>
+    </div>
+    <div id="bnd-sigmoid" class="inner-content">
+      <p><strong>Sigmoid (S-shaped) collapse:</strong> The boundary stays high for a while, then drops steeply at a specific moment, then levels off. This models "I'm patient at first, but panic kicks in at 0.8 seconds."</p>
+      <div class="example"><strong>Formula:</strong> B(t) = a × (1 − 1/(1 + e^(−k(t−t_mid)))) &nbsp;|&nbsp; 't_mid' is when the big drop happens.</div>
+      <div class="analogy"><strong>🎯 Analogy:</strong> A game show contestant who's calm for the first 30 seconds, then suddenly panics in the last 10 seconds.</div>
+    </div>
+    <div id="bnd-urgency" class="inner-content">
+      <p><strong>Urgency gating:</strong> Instead of lowering the boundary, this model <em>boosts the evidence</em> as time passes. The boundary stays fixed, but urgency adds to the accumulated evidence, making it easier to cross the threshold later.</p>
+      <div class="example"><strong>Formula:</strong> Decision when |X(t) + u(t)| ≥ a &nbsp;|&nbsp; u(t) = g×t (urgency grows with time). 'g' is the urgency gain.</div>
+      <div class="analogy"><strong>🎯 Analogy:</strong> Like adrenaline kicking in as a deadline approaches — it doesn't change the goal, but it amplifies your mental effort.</div>
+    </div>
+
+    <div class="canvas-wrap" style="margin-top:16px">
+      <canvas id="boundaryCanvas" width="720" height="240"></canvas>
+      <div class="caption" id="boundaryCap">Fixed boundary — stays flat over time</div>
+    </div>
+
+    <div class="demo-controls">
+      <div class="slider-group">
+        <label>Boundary (a): <span class="val" id="aVal">1.5</span></label>
+        <input type="range" min="0.5" max="3" step="0.1" value="1.5" oninput="updateBndParam('a',this.value)" id="aSlider">
+      </div>
+      <div class="slider-group">
+        <label>Collapse / λ / k / gain: <span class="val" id="kVal">1.0</span></label>
+        <input type="range" min="0.1" max="5" step="0.1" value="1.0" oninput="updateBndParam('k',this.value)" id="kSlider">
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════ SECTION 4: BayesFlow & SBI ═══════════ -->
+<div class="section" id="sec4">
+
+  <div class="card highlight">
+    <h2><span class="emoji-big">🤖</span> Simulation-Based Inference (SBI)</h2>
+    <p>Here's the core problem: if we change the boundary shape, we <strong>can't write a formula</strong> for the probability of any particular RT. The math just doesn't work out analytically for complex boundary shapes.</p>
+    <p>SBI is a way to <strong>bypass this problem entirely</strong>. Instead of computing the probability mathematically, we <em>simulate millions of datasets</em> and train a neural network to recognize patterns.</p>
+    <div class="analogy">
+      <strong>🎯 Analogy:</strong> Imagine you're trying to figure out what settings a camera was on when a photo was taken (shutter speed, aperture, ISO). You don't have a formula to compute this. But if you take 1 million photos with every setting combination and train a neural network on them, it can look at any new photo and immediately tell you the likely settings. SBI does exactly this, but for brain parameters.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📖 Key Terms in SBI</h2>
+    <div class="term-grid">
+      <div class="term-box">
+        <div class="term-name">Prior Distribution</div>
+        <div class="term-symbol">p(θ) — before seeing data</div>
+        <p>Your <em>belief</em> about what values the parameters could take <em>before</em> you see any data. "I think drift rate v is probably between -3 and +3." Encoded as a probability distribution.</p>
+      </div>
+      <div class="term-box">
+        <div class="term-name">Posterior Distribution</div>
+        <div class="term-symbol">p(θ|data) — after seeing data</div>
+        <p>Your <em>updated</em> belief about parameters <em>after</em> seeing the data. "Given this person's RTs and choices, v is probably between 1.2 and 2.1." This is what we want.</p>
+      </div>
+      <div class="term-box">
+        <div class="term-name">Likelihood</div>
+        <div class="term-symbol">p(data|θ) — data given params</div>
+        <p>How probable is this specific dataset if these are the true parameters? In classical methods you need this. In SBI, you <em>don't</em> — you just simulate instead.</p>
+      </div>
+      <div class="term-box">
+        <div class="term-name">Amortized Inference</div>
+        <div class="term-symbol">train once, use forever</div>
+        <p>After training the network on millions of simulations, you can analyze any new participant's data <em>instantly</em>. The "cost" is paid once at training time, then amortized across all future uses.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧠 BayesFlow — the software</h2>
+    <p>BayesFlow is a Python library that implements SBI. It has two main neural network components:</p>
+    <hr class="divider">
+    <h3>Summary Network (SetTransformer)</h3>
+    <p>A neural network that takes in a list of 200+ (RT, choice) pairs from one participant and compresses them into a short fixed-length "fingerprint" — a vector of 64 numbers that captures the statistical essence of that person's behavior.</p>
+    <div class="analogy">
+      <strong>🎯 Analogy:</strong> A doctor doesn't read every word in a patient's 500-page medical file. They look for patterns: "mostly normal, one spike in blood pressure, history of migraines" — a short summary. The summary network does this for RT data.
+    </div>
+    <hr class="divider">
+    <h3>Inference Network (Normalizing Flow)</h3>
+    <p>Takes that 64-number fingerprint and produces a full posterior distribution — a cloud of likely parameter values. It's a special type of neural network that learns to warp a simple random distribution (like a Gaussian) into a complex, shaped posterior.</p>
+    <div class="analogy">
+      <strong>🎯 Analogy:</strong> Think of squeezing Play-Doh through a mold. The neural network is the mold — it takes a simple blob and reshapes it into the exact shape the posterior should have.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📐 Simulation-Based Calibration (SBC)</h2>
+    <p>How do you know if your trained network's posterior is trustworthy? You run SBC: a diagnostic test.</p>
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Pick a true θ* from the prior</h4>
+          <p>Pretend you know the true parameters. E.g., v=1.5, a=1.2, t₀=0.3.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Simulate data with those parameters</h4>
+          <p>Run the DDM simulator 200 times → get 200 (RT, choice) pairs.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Get posterior from BayesFlow</h4>
+          <p>Feed the simulated data into the trained network → get 1000 samples of what it thinks the parameters are.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>Check: where does θ* rank among the 1000 samples?</h4>
+          <p>If the posterior is correct, θ* should land at a random rank (e.g., 273rd out of 1000) — not always at the top or bottom. Do this 1000 times: the rank distribution should be flat (uniform).</p>
+        </div>
+      </div>
+    </div>
+    <div class="warning">
+      If ranks cluster at low or high values, the posterior is biased — the network is systematically under- or over-estimating parameters.
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════ SECTION 5: Full Pipeline ═══════════ -->
+<div class="section" id="sec5">
+
+  <div class="card highlight">
+    <h2><span class="emoji-big">🔬</span> The Full Project Pipeline</h2>
+    <p>Here is every step from start to finish, in plain English.</p>
+  </div>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="num">Step 1</div>
+      <div class="label">Define Prior</div>
+      <div class="sub">Plausible ranges for parameters</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="num">Step 2</div>
+      <div class="label">Simulate</div>
+      <div class="sub">Generate millions of (θ, data) pairs</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="num">Step 3</div>
+      <div class="label">Train Network</div>
+      <div class="sub">BayesFlow learns p(θ|data)</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="num">Step 4</div>
+      <div class="label">Check (SBC)</div>
+      <div class="sub">Verify the posteriors are calibrated</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="num">Step 5</div>
+      <div class="label">Fit Real Data</div>
+      <div class="sub">Pass empirical data → get posteriors</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="num">Step 6</div>
+      <div class="label">PPC</div>
+      <div class="sub">Simulate from posteriors, compare to data</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Step 1 — Define the Prior</h2>
+    <p>Before looking at any data, you decide: "What are plausible values for drift rate, boundary, etc.?" This is the <strong>prior distribution</strong>.</p>
+    <div class="example">
+      <strong>Example:</strong> "Drift rate v is probably somewhere between -4 and +4 — let's use a Normal distribution centered at 0." This encodes the belief that most people are neither extremely fast nor extremely slow accumulators.
+    </div>
+    <p>You also do a <strong>prior predictive check</strong>: simulate some data just from the prior and ask "does this look vaguely like real human data?" If not, your prior is too wide or too narrow.</p>
+  </div>
+
+  <div class="card">
+    <h2>Step 2 — Simulate Millions of Datasets</h2>
+    <p>For each simulation:</p>
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-num">a</div>
+        <div class="step-body">
+          <h4>Draw random parameters from the prior</h4>
+          <p>e.g., v=0.82, a=1.34, t₀=0.21, λ=0.87</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">b</div>
+        <div class="step-body">
+          <h4>Run the DDM simulator 200 times with those parameters</h4>
+          <p>Get 200 (RT, choice) pairs.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">c</div>
+        <div class="step-body">
+          <h4>Store the pair (parameters, dataset)</h4>
+          <p>Do this 100,000 times. The network will learn from all of them.</p>
+        </div>
+      </div>
+    </div>
+    <div class="analogy">
+      <strong>🎯 Analogy:</strong> Teaching a student to recognize handwriting by showing them 100,000 examples — each with the handwritten text AND what letter it actually is. The network learns the mapping from text to letter. BayesFlow learns the mapping from data-patterns to parameters.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Step 5 — Fit Real Data (Empirical Inference)</h2>
+    <p>Load the actual data from Katsimpokis et al. (2020). For each participant in each condition:</p>
+    <div class="example">
+      <strong>Input:</strong> 200 rows of (RT, choice) for this participant.<br>
+      <strong>→ Summary network compresses this to 64 numbers.</strong><br>
+      <strong>→ Inference network converts to 1000 parameter samples (the posterior).</strong><br>
+      <strong>Output:</strong> "Participant #12 in the deadline condition likely has v≈1.4, a≈0.9, λ≈1.8" (with uncertainty ranges).
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Step 6 — Posterior Predictive Check (PPC)</h2>
+    <p>The final quality check: "Does my model actually reproduce what people <em>did</em>?"</p>
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Sample 200 parameter sets from the posterior</h4>
+          <p>These are the parameter values our model thinks are likely for this participant.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Simulate 500 trials with each parameter set</h4>
+          <p>Get 200 × 500 = 100,000 synthetic (RT, choice) pairs.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Compare simulated vs. real RT distributions</h4>
+          <p>Do the simulated RT quantiles match the real ones? Does accuracy match? If yes → good model fit.</p>
+        </div>
+      </div>
+    </div>
+    <div class="example">
+      <strong>Key plots to make:</strong><br>
+      • <strong>QP plot (Quantile-Probability)</strong>: Is the 50th percentile RT in simulation ≈ real data? The 90th percentile?<br>
+      • <strong>CAF (Conditional Accuracy Function)</strong>: Among the fastest 20% of responses, what fraction were correct? Among the slowest 20%? Should match real data.<br>
+      • <strong>Non-response rate</strong>: What fraction of trials hit the deadline? Should match.
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════ SECTION 6: Quiz ═══════════ -->
+<div class="section" id="sec6">
+
+  <div class="card highlight">
+    <h2><span class="emoji-big">✅</span> Check Your Understanding</h2>
+    <p>Answer these questions to test your grasp of the key concepts.</p>
+  </div>
+
+  <div class="card">
+    <div class="quiz-q" id="q1">
+      <p>1. What does a high drift rate (v) mean?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,'q1',false)">The person responds very slowly</button>
+        <button class="quiz-option" onclick="answer(this,'q1',true)">Evidence accumulates quickly — easy task or strong signal</button>
+        <button class="quiz-option" onclick="answer(this,'q1',false)">The boundary collapses faster</button>
+        <button class="quiz-option" onclick="answer(this,'q1',false)">The person is biased toward one response</button>
+      </div>
+      <div class="quiz-feedback" id="fb-q1"></div>
+    </div>
+    <hr class="divider">
+    <div class="quiz-q" id="q2">
+      <p>2. Why can't we just use classical maximum likelihood to fit collapsing boundary models?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,'q2',false)">The models are too simple</button>
+        <button class="quiz-option" onclick="answer(this,'q2',false)">We don't have enough data</button>
+        <button class="quiz-option" onclick="answer(this,'q2',true)">The likelihood function is mathematically intractable for complex boundary shapes</button>
+        <button class="quiz-option" onclick="answer(this,'q2',false)">BayesFlow is faster</button>
+      </div>
+      <div class="quiz-feedback" id="fb-q2"></div>
+    </div>
+    <hr class="divider">
+    <div class="quiz-q" id="q3">
+      <p>3. What is the purpose of Simulation-Based Calibration (SBC)?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,'q3',false)">To train the BayesFlow network faster</button>
+        <button class="quiz-option" onclick="answer(this,'q3',false)">To generate more empirical data</button>
+        <button class="quiz-option" onclick="answer(this,'q3',true)">To verify that the trained network produces reliable, unbiased posteriors</button>
+        <button class="quiz-option" onclick="answer(this,'q3',false)">To compare models against each other</button>
+      </div>
+      <div class="quiz-feedback" id="fb-q3"></div>
+    </div>
+    <hr class="divider">
+    <div class="quiz-q" id="q4">
+      <p>4. What does the Summary Network in BayesFlow do?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,'q4',false)">Generates synthetic RT data from parameters</button>
+        <button class="quiz-option" onclick="answer(this,'q4',true)">Compresses hundreds of (RT, choice) pairs into a short fixed-size fingerprint</button>
+        <button class="quiz-option" onclick="answer(this,'q4',false)">Computes the posterior distribution directly</button>
+        <button class="quiz-option" onclick="answer(this,'q4',false)">Trains the boundary function</button>
+      </div>
+      <div class="quiz-feedback" id="fb-q4"></div>
+    </div>
+    <hr class="divider">
+    <div class="quiz-q" id="q5">
+      <p>5. What is the key difference between urgency gating and a collapsing boundary?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,'q5',false)">Urgency gating only works with the DDM, not other models</button>
+        <button class="quiz-option" onclick="answer(this,'q5',true)">Collapsing boundary lowers the threshold; urgency gating boosts the accumulated evidence instead</button>
+        <button class="quiz-option" onclick="answer(this,'q5',false)">They are mathematically identical</button>
+        <button class="quiz-option" onclick="answer(this,'q5',false)">Urgency gating makes decisions slower</button>
+      </div>
+      <div class="quiz-feedback" id="fb-q5"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🗺️ Glossary at a Glance</h2>
+    <div class="term-grid">
+      <div class="term-box"><div class="term-name">EAM</div><p>Evidence Accumulation Model — any model where decisions happen by accumulating noisy evidence until a threshold.</p></div>
+      <div class="term-box"><div class="term-name">DDM</div><p>Diffusion Decision Model — the most popular EAM, treats evidence as a random walk with a drift.</p></div>
+      <div class="term-box"><div class="term-name">Prior</div><p>Your beliefs about parameter values before seeing data.</p></div>
+      <div class="term-box"><div class="term-name">Posterior</div><p>Updated beliefs after seeing data — what the model estimates the true parameters to be.</p></div>
+      <div class="term-box"><div class="term-name">Likelihood</div><p>How probable the observed data is given specific parameters — needed in classical methods but not SBI.</p></div>
+      <div class="term-box"><div class="term-name">SBI</div><p>Simulation-Based Inference — use simulations instead of likelihood to fit models.</p></div>
+      <div class="term-box"><div class="term-name">BayesFlow</div><p>Python library implementing SBI with neural networks.</p></div>
+      <div class="term-box"><div class="term-name">PPC</div><p>Posterior Predictive Check — simulate from fitted parameters and compare to real data.</p></div>
+      <div class="term-box"><div class="term-name">SBC</div><p>Simulation-Based Calibration — diagnostic test to verify posteriors are reliable.</p></div>
+      <div class="term-box"><div class="term-name">SAT</div><p>Speed-Accuracy Trade-off — the fundamental tension between going fast vs. being accurate.</p></div>
+      <div class="term-box"><div class="term-name">CAF</div><p>Conditional Accuracy Function — accuracy plotted as a function of RT quantile bin.</p></div>
+      <div class="term-box"><div class="term-name">RT</div><p>Response Time — how long from stimulus onset to button press.</p></div>
+    </div>
+  </div>
+
+</div>
+
+</main>
+
+<script>
+// ── Navigation ──────────────────────────────────────────────────────────────
+const sections = document.querySelectorAll('.section');
+const navBtns = document.querySelectorAll('nav button');
+const progBar = document.getElementById('progress');
+let currentSec = 0;
+
+function showSection(idx) {
+  sections.forEach(s => s.classList.remove('visible'));
+  navBtns.forEach(b => b.classList.remove('active'));
+  sections[idx].classList.add('visible');
+  navBtns[idx].classList.add('active');
+  currentSec = idx;
+  progBar.style.width = ((idx + 1) / sections.length * 100) + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (idx === 1) drawRTHist();
+  if (idx === 2) drawDDM();
+  if (idx === 3) drawBoundary('fixed');
+}
+
+// ── RT Histogram ─────────────────────────────────────────────────────────────
+function drawRTHist() {
+  const canvas = document.getElementById('rtCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Generate fake right-skewed data (ex-Gaussian style)
+  const rts = [];
+  for (let i = 0; i < 2000; i++) {
+    const u1 = Math.random(), u2 = Math.random();
+    const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    const rt = Math.max(0.15, 0.45 + z * 0.12 + Math.random() * Math.random() * 0.6);
+    rts.push(rt);
+  }
+
+  const bins = 40, minRT = 0.15, maxRT = 2.0;
+  const binW = (maxRT - minRT) / bins;
+  const counts = new Array(bins).fill(0);
+  rts.forEach(rt => {
+    const b = Math.min(Math.floor((rt - minRT) / binW), bins - 1);
+    if (b >= 0) counts[b]++;
+  });
+  const maxCount = Math.max(...counts);
+
+  const pad = { l: 50, r: 20, t: 20, b: 40 };
+  const drawW = W - pad.l - pad.r;
+  const drawH = H - pad.t - pad.b;
+
+  // Axes
+  ctx.strokeStyle = '#2a3050'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, H - pad.b);
+  ctx.lineTo(W - pad.r, H - pad.b); ctx.stroke();
+
+  // Bars
+  counts.forEach((c, i) => {
+    const x = pad.l + i * (drawW / bins);
+    const barH = (c / maxCount) * drawH;
+    const grad = ctx.createLinearGradient(0, H - pad.b - barH, 0, H - pad.b);
+    grad.addColorStop(0, '#6c8ef5');
+    grad.addColorStop(1, '#3a4a9a');
+    ctx.fillStyle = grad;
+    ctx.fillRect(x + 1, H - pad.b - barH, drawW / bins - 2, barH);
+  });
+
+  // Labels
+  ctx.fillStyle = '#8890aa'; ctx.font = '11px Inter'; ctx.textAlign = 'center';
+  [0.2, 0.5, 1.0, 1.5, 2.0].forEach(v => {
+    const x = pad.l + ((v - minRT) / (maxRT - minRT)) * drawW;
+    ctx.fillText(v.toFixed(1) + 's', x, H - pad.b + 16);
+  });
+  ctx.textAlign = 'left'; ctx.fillText('RT (seconds)', W / 2 - 30, H - 4);
+}
+
+// ── DDM Paths ────────────────────────────────────────────────────────────────
+function drawDDM() {
+  const canvas = document.getElementById('ddmCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const pad = { l: 50, r: 20, t: 20, b: 40 };
+  const drawW = W - pad.l - pad.r;
+  const drawH = H - pad.t - pad.b;
+  const midY = pad.t + drawH / 2;
+  const a = 1.2, maxT = 1.5, dt = 0.005, v = 1.0;
+  const scaleX = drawW / maxT;
+  const scaleY = (drawH / 2) / (a * 1.4);
+
+  // Boundaries
+  ctx.setLineDash([6, 4]);
+  ctx.strokeStyle = 'rgba(108,245,184,0.5)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(pad.l, midY - a * scaleY); ctx.lineTo(W - pad.r, midY - a * scaleY); ctx.stroke();
+  ctx.strokeStyle = 'rgba(245,108,108,0.5)';
+  ctx.beginPath(); ctx.moveTo(pad.l, midY + a * scaleY); ctx.lineTo(W - pad.r, midY + a * scaleY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#8890aa'; ctx.font = '11px Inter';
+  ctx.fillText('Correct (+a)', pad.l + 4, midY - a * scaleY - 5);
+  ctx.fillText('Error (−a)', pad.l + 4, midY + a * scaleY + 14);
+
+  // Axes
+  ctx.strokeStyle = '#2a3050'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, H - pad.b);
+  ctx.lineTo(W - pad.r, H - pad.b); ctx.stroke();
+  ctx.fillStyle = '#8890aa'; ctx.textAlign = 'center';
+  ctx.fillText('Time (s)', W / 2, H - 4);
+
+  // Simulate paths
+  const colors = ['#6c8ef5','#f5c16c','#9b7dff','#f56c6c','#6cf5b8'];
+  for (let p = 0; p < 5; p++) {
+    let x = 0, t = 0;
+    ctx.beginPath();
+    ctx.strokeStyle = colors[p] + 'cc'; ctx.lineWidth = 1.5;
+    ctx.moveTo(pad.l, midY);
+    let hit = false;
+    while (t < maxT) {
+      const px = pad.l + t * scaleX;
+      const py = midY - x * scaleY;
+      ctx.lineTo(px, py);
+      x += v * dt + (Math.random() - 0.5) * Math.sqrt(dt) * 2.5;
+      t += dt;
+      if (x >= a) {
+        ctx.lineTo(pad.l + t * scaleX, midY - a * scaleY);
+        ctx.stroke();
+        ctx.beginPath(); ctx.arc(pad.l + t * scaleX, midY - a * scaleY, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#6cf5b8'; ctx.fill();
+        hit = true; break;
+      }
+      if (x <= -a) {
+        ctx.lineTo(pad.l + t * scaleX, midY + a * scaleY);
+        ctx.stroke();
+        ctx.beginPath(); ctx.arc(pad.l + t * scaleX, midY + a * scaleY, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#f56c6c'; ctx.fill();
+        hit = true; break;
+      }
+    }
+    if (!hit) ctx.stroke();
+  }
+}
+
+// ── Boundary visualizer ──────────────────────────────────────────────────────
+let currentBnd = 'fixed';
+let bndParams = { a: 1.5, k: 1.0 };
+
+function showBoundary(type) {
+  document.querySelectorAll('.inner-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.inner-content').forEach(c => c.classList.remove('active'));
+  const tabs = document.querySelectorAll('.inner-tab');
+  const map = ['fixed','linear','exponential','sigmoid','urgency'];
+  const idx = map.indexOf(type);
+  if (tabs[idx]) tabs[idx].classList.add('active');
+  const cont = document.getElementById('bnd-' + type);
+  if (cont) cont.classList.add('active');
+  currentBnd = type;
+  drawBoundary(type);
+}
+
+function updateBndParam(key, val) {
+  bndParams[key] = parseFloat(val);
+  document.getElementById(key === 'a' ? 'aVal' : 'kVal').textContent = parseFloat(val).toFixed(1);
+  drawBoundary(currentBnd);
+}
+
+function drawBoundary(type) {
+  const canvas = document.getElementById('boundaryCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const pad = { l: 55, r: 20, t: 20, b: 45 };
+  const drawW = W - pad.l - pad.r;
+  const drawH = H - pad.t - pad.b;
+  const maxT = 2.0, a = bndParams.a, k = bndParams.k;
+
+  // Axes
+  ctx.strokeStyle = '#2a3050'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, H - pad.b);
+  ctx.lineTo(W - pad.r, H - pad.b); ctx.stroke();
+
+  // Y-axis labels
+  ctx.fillStyle = '#8890aa'; ctx.font = '11px Inter'; ctx.textAlign = 'right';
+  const maxY = 3.5;
+  [0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0].forEach(v => {
+    const y = H - pad.b - (v / maxY) * drawH;
+    ctx.fillText(v.toFixed(1), pad.l - 6, y + 4);
+    ctx.strokeStyle = 'rgba(42,48,80,0.5)'; ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+  });
+
+  ctx.textAlign = 'center'; ctx.fillStyle = '#8890aa';
+  ctx.fillText('Time (s)', W / 2, H - 5);
+  [0, 0.5, 1.0, 1.5, 2.0].forEach(v => {
+    ctx.fillText(v.toFixed(1), pad.l + (v / maxT) * drawW, H - pad.b + 16);
+  });
+
+  // Axis labels
+  ctx.save(); ctx.translate(14, H / 2); ctx.rotate(-Math.PI / 2);
+  ctx.fillText('Boundary B(t)', 0, 0); ctx.restore();
+
+  // Helper: map time to canvas x
+  const tx = t => pad.l + (t / maxT) * drawW;
+  const ty = b => H - pad.b - (Math.max(0, Math.min(b, maxY)) / maxY) * drawH;
+
+  function getBoundary(t) {
+    const eps = 0.05;
+    switch(type) {
+      case 'fixed': return a;
+      case 'linear': return Math.max(a - k * t, eps);
+      case 'exponential': return Math.max(a * Math.exp(-k * t), 0.01);
+      case 'sigmoid': {
+        const tmid = 1.0 / k;
+        const sig = 1 / (1 + Math.exp(-k * 2 * (t - tmid)));
+        return Math.max(a * (1 - sig), 0.01);
+      }
+      case 'urgency': return a; // fixed boundary
+      default: return a;
+    }
+  }
+
+  const steps = 300;
+  ctx.lineWidth = 2.5;
+
+  // Upper boundary
+  const grad = ctx.createLinearGradient(pad.l, 0, W - pad.r, 0);
+  grad.addColorStop(0, '#6c8ef5');
+  grad.addColorStop(1, type === 'urgency' ? '#f5c16c' : '#f56c6c');
+  ctx.strokeStyle = grad;
+  ctx.beginPath();
+  for (let i = 0; i <= steps; i++) {
+    const t = (i / steps) * maxT;
+    const b = getBoundary(t);
+    if (i === 0) ctx.moveTo(tx(t), ty(b));
+    else ctx.lineTo(tx(t), ty(b));
+  }
+  ctx.stroke();
+
+  // Lower boundary (mirrored, negative)
+  ctx.strokeStyle = '#f56c6c99'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  for (let i = 0; i <= steps; i++) {
+    const t = (i / steps) * maxT;
+    const b = -getBoundary(t);
+    if (i === 0) ctx.moveTo(tx(t), ty(b + maxY * 0.5));
+    else ctx.lineTo(tx(t), ty(b + maxY * 0.5));
+  }
+  ctx.setLineDash([]);
+
+  // Urgency overlay
+  if (type === 'urgency') {
+    ctx.strokeStyle = '#f5c16c88'; ctx.lineWidth = 1.5; ctx.setLineDash([3, 5]);
+    ctx.beginPath();
+    for (let i = 0; i <= steps; i++) {
+      const t = (i / steps) * maxT;
+      const u = k * 0.3 * t;
+      if (i === 0) ctx.moveTo(tx(t), ty(u));
+      else ctx.lineTo(tx(t), ty(u));
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#f5c16c'; ctx.font = '11px Inter'; ctx.textAlign = 'left';
+    ctx.fillText('Urgency u(t)', tx(0.5), ty(k * 0.3 * 0.5) - 6);
+  }
+
+  // Label
+  const caps = {
+    fixed: 'Fixed boundary — stays constant',
+    linear: 'Linear collapse — straight ramp down',
+    exponential: 'Exponential — fast early drop, then slow',
+    sigmoid: 'Sigmoid — stays high, then sharp drop at inflection',
+    urgency: 'Urgency gate — boundary fixed; evidence boosted by urgency (yellow)',
+  };
+  document.getElementById('boundaryCap').textContent = caps[type];
+}
+
+// ── Quiz ──────────────────────────────────────────────────────────────────────
+const feedbacks = {
+  q1: { t: '✅ Correct! High drift rate means the signal is strong — evidence piles up fast.', f: '❌ Drift rate controls the speed of evidence accumulation, not the boundary or bias.' },
+  q2: { t: '✅ Correct! Collapsing boundary shapes make the likelihood integral unsolvable analytically — SBI simulates its way around this.', f: '❌ The real issue is mathematical: no closed-form likelihood exists for collapsing boundaries.' },
+  q3: { t: '✅ Correct! SBC checks that the posterior is honest — not systematically too wide, too narrow, or biased.', f: '❌ SBC is a diagnostic tool for checking posterior quality, not for training or data generation.' },
+  q4: { t: '✅ Correct! The summary network squashes hundreds of trial rows into a compact fingerprint the inference network can work with.', f: '❌ The summary network compresses data, not generates it or computes the posterior directly.' },
+  q5: { t: '✅ Correct! Mechanistically very different: collapse → lower the bar; urgency → boost the jumper.', f: '❌ They are different mechanisms: one changes the threshold, the other changes the evidence signal.' },
+};
+
+function answer(btn, qid, correct) {
+  const container = document.getElementById(qid);
+  const opts = container.querySelectorAll('.quiz-option');
+  opts.forEach(o => { o.classList.remove('correct', 'wrong'); o.disabled = true; });
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) {
+    // Highlight correct answer
+    opts.forEach(o => { if (o.onclick.toString().includes('true')) o.classList.add('correct'); });
+  }
+  document.getElementById('fb-' + qid).textContent = feedbacks[qid][correct ? 't' : 'f'];
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+drawRTHist();
+</script>
+</body>
+</html>

@@ -9,7 +9,7 @@ Results are always saved to ../data/simulated_data_<boundary>.csv.
 
 Example
 -------
-python ddm_simulation.py --boundary exponential --v 1.0 --a 1.0 --t0 0.2 \
+python models/simulation.py --boundary exponential --v 1.0 --a 1.0 --t0 0.2 \
     --z 0.5 --n-trials 500 --lam 0.3 --seed 42 --plot
 """
 
@@ -446,13 +446,13 @@ def main() -> None:
 
     df = pd.DataFrame({"rt": rts, "choice": choices})
 
-    file_output_path = Path(f"../output/data/simulated_data_{args.boundary}.csv")
+    file_output_path = Path(f"output/data/simulated_data_{args.boundary}.csv")
     file_output_path.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(file_output_path, index=False)
     print(f"Saved {args.n_trials} trials to {file_output_path}")
 
     if args.plot:
-        plot_output_path = Path(f"../output/plots/simulated_data_{args.boundary}.png")
+        plot_output_path = Path(f"output/plots/simulated_data_{args.boundary}.png")
         plot_output_path.parent.mkdir(parents=True, exist_ok=True)
         plot_ddm_results(df, plot_output_path=plot_output_path, title_prefix=f"{args.boundary.capitalize()} collapse")
 

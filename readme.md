@@ -10,11 +10,9 @@ Extend prior EAM modeling work (Katsimpokis et al., 2020) by implementing **non-
 ### Research Question
 > Do non-linear boundary functions (exponential, sigmoid) or urgency gating improve model fit over linear collapsing boundaries, and does this depend on the type of speed-accuracy trade-off manipulation used?
 
-
 ---
 
 ## 2. Domains
-
 
 ### 2.1 Speeded Decision Tasks
 Participants make forced-choice decisions (e.g., is this stimulus left or right?) under time pressure. The data are:
@@ -53,8 +51,6 @@ where:
 
 ### 2.3 Boundary Functions
 
-This project requires implementing alternatives to fixed boundaries:
-
 #### Fixed Boundary
 ```
 B(t) = a   (constant)
@@ -67,14 +63,14 @@ B(t) = max(a - k·t, ε)
 - `k` = collapse rate
 - `ε` = minimum boundary (prevents B→0)
 
-#### Exponential Collapsing Boundary *(to implement)*
+#### Exponential Collapsing Boundary 
 ```
 B(t) = a · exp(-λ·t)
 ```
 - `λ` = decay rate
 - Collapses fast early, asymptotes toward 0
 
-#### Sigmoid / Logistic Collapsing Boundary *(to implement)*
+#### Sigmoid / Logistic Collapsing Boundary
 ```
 B(t) = a · (1 - 1/(1 + exp(-k·(t - t_mid))))
 ```
@@ -82,19 +78,13 @@ B(t) = a · (1 - 1/(1 + exp(-k·(t - t_mid))))
 - Stays near `a` initially, then collapses sharply around `t_mid`
 
 
+---
 
 ## 3. Simulation Workflow
 
+### Step 1: Defining Prior Distributions
 
-
-### Step 1: Define Prior Distributions
-
-Specify plausible ranges for each model parameter. These must be **broad enough** to cover all realistic values but **not pathological**.
-
-**Tasks:**
-- Define prior `p(θ)` for each parameter
-- Use truncated normal or uniform distributions
-- Ensure prior predictive data looks realistic (prior predictive check)
+Specify plausible ranges for each model parameter which are broad enough and sensible.
 
 **Key considerations:**
 - Drift `v`: can be negative (error-prone), typically `v ~ Normal(0, 2)`
@@ -102,24 +92,53 @@ Specify plausible ranges for each model parameter. These must be **broad enough*
 - Collapse rate `λ` or `k`: must be positive; consider log-normal prior
 - Non-decision time `t0`: strictly bounded below 0 and above minimum RT in data
 
+Two possible parameterizations were considered:
+
+| Approach | Description |
+|---|---|
+| **A. Per-cell free priors** | Each (participant × cue × deadline) cell draws its own `v_scale, a, t0, λ` independently from shared priors, no built-in cue/deadline effect. Mirrors the paper's own approach of freely estimating parameters per condition (Table 3 in Katsimpokis et al.). Any cue/deadline effect emerges empirically after fitting, not baked into the simulator.
+
+
+Current priors :
+```python
+v_scale ~ Normal(8.0, 2.0)            # coherence -> drift slope
+t0      ~ Uniform(0.15, 0.40)         # non-decision time
+a       ~ |Normal(1.0, 0.3)| + 0.2    # boundary separation
+lam     ~ |Normal(0.5, 0.4)| + 0.01   # collapse rate (~0 approximates a fixed bound)
+```
+
 ---
 
-### Step 2: Implement the Simulator
+### Step 2: Implementation of the Simulator
 
-The simulator generates synthetic RT + choice data given a parameter vector θ. This is the **core scientific component**.
+The simulator generates synthetic RT + choice data given a parameter vector θ.
 
-**Tasks:**
-- Implement Euler-Maruyama numerical integration of the diffusion process
-- Implement all boundary functions (fixed, linear, exponential, sigmoid, urgency)
-- Output: `(RT, choice)` pairs per trial
-- Handle non-responses (trials that don't cross boundary before deadline)
+**Implemented:**
+- Euler-Maruyama integration of the diffusion process
+- All four boundary functions (fixed, linear, exponential, sigmoid)
+- **Vectorized across trials**: the simulator loops over time steps once and updates all trials in a condition cell simultaneously via boolean masks, scaled to participant × cue × deadline × coherence combinations.
 
 **Key considerations:**
-- Time step `dt` should be small (0.001s) for accuracy
-- Cap maximum integration time (e.g., 3s or experimental deadline)
-- Vectorize simulation over multiple trials and parameter samples
+- `dt = 0.001–0.002s`
+- Max integration time capped at `deadline + buffer` (or 3s if no deadline)
+
 
 ---
+
+## 4. Data Structure
+
+### Data Dictionary: DDM Mapping
+
+| Column | Meaning | Maps to in Our DDM |
+| :--- | :--- | :--- |
+| **pp** | participant ID | individual differences in `v, t0, a` |
+| **cue** | "speed" or "accuracy" instruction | boundary height `a` (cue → threshold, per the paper's finding) |
+| **deadline** | "deadline" or "no_deadline" | collapse rate (`λ`/`k_sig`) + hard cutoff time |
+| **coherence** | % of dots moving coherently (Exp. 1 difficulty) | drift rate `v` — higher coherence = stronger signal |
+| **difficulty** | categorical index (1–6) of the coherence level | labeled version of coherence, handy for grouping/plotting |
+| **rt** | response time (s) | model output |
+| **acc** | 1=correct, 0=error, NaN=non-response | model output |
+
 
 ## 6. How the Simulation Works (Euler-Maruyama)
 
@@ -144,17 +163,7 @@ This produces a synthetic dataset of (RT, choice) pairs that we can compare to r
 
 > **Analogy:** Like a video game that cannot run physics continuously, so it recalculates positions 60 times per second. The smaller the time step (dt), the more accurate the simulation, but smaller dt means more computation.
 
-
 ---
-[TODO]
-New Params/Fields in simulated Data
-- Difficulty Levels
-- Drift Rate
--  CUE
--  Accuracy
--  Deadline
--  PP
-
 
 
 ## Neural Network Section : *Esther & Paula*

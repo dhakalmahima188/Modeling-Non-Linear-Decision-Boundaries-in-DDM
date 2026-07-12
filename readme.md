@@ -146,6 +146,14 @@ This produces a synthetic dataset of (RT, choice) pairs that we can compare to r
 
 
 ---
+[TODO]
+New Params/Fields in simulated Data
+- Difficulty Levels
+- Drift Rate
+-  CUE
+-  Accuracy
+-  Deadline
+-  PP
 
 
 

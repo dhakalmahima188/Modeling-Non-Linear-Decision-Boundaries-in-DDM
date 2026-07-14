@@ -1,4 +1,9 @@
 # Collapsing Decision Boundaries
+```bash
+https://bayesflow.org/v2.0.12/index.html Bayesflow 2, runs only on version 3.11-3.13, so change the version
+brew install python@3.13
+~/../../opt/homebrew/opt/python@3.13/bin/python3 -m venv .venv  
+```
 
 ## Simulation Section : *Mahima & Bishesh*
 

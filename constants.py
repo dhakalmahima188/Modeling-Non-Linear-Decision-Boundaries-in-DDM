@@ -1,4 +1,4 @@
-MODEL_NAMES = ["sigmoid"]
+MODEL_NAMES = ["exponential"]
 
 DT = 0.002
 MAX_TIME = 3.0

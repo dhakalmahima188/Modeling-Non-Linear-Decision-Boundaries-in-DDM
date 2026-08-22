@@ -12,8 +12,7 @@
 7. [Diagnostics](#7-diagnostics)
 8. [Inference](#8-inference)
 9. [Discussion & Conclusion](#9-discussion--conclusion)
-10. [Reproducing the Results](#10-reproducing-the-results)
-11. [References](#11-references)
+10. [References](#10-references)
 
 ---
 
@@ -328,29 +327,6 @@ After replacing the uniform $t_0$ prior with the truncated normal ($\mathcal{N}^
 
 ---
 
-## 10. Reproducing the Results
-
-```bash
-source .venv/bin/activate
-
-# 1. Sanity-check the simulator and produce the behavioural plots
-python3 -m src.simulator --model exponential --plot
-
-# 2. Train (online) — exponential and sigmoid
-python3 -m src.train --model exponential --epochs 30 --batches-per-epoch 32 --batch-size 50
-python3 -m src.train --model sigmoid     --epochs 30 --batches-per-epoch 32 --batch-size 50
-
-# 3. Diagnostics: loss, recovery, SBC/coverage, z-score contraction
-python3 -m src.diagnostics --model exponential --out images/
-
-# 4. Fit to empirical data + posterior predictive checks
-python3 -m src.inference --model exponential --data data/flash_pairs.csv --out images/
-```
-
-Trained approximators and posterior draws are cached with `pickle`; delete the cache to force a retrain.
-
----
-
 
 ## Appendix: Sigmoid Model
 
@@ -368,7 +344,7 @@ Trained approximators and posterior draws are cached with `pickle`; delete the c
 
 ---
 
-## 11. References
+## 10. References
 
 - Katsimpokis, D., Hawkins, G. E., & van Maanen, L. (2020). *Not all speed-accuracy trade-off manipulations have the same psychological effect.* Computational Brain & Behavior.
 - Ratcliff, R. (1978). *A theory of memory retrieval.* Psychological Review, 85(2), 59–108.

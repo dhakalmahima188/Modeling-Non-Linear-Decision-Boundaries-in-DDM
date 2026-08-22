@@ -112,7 +112,7 @@ For each trial, the recorded variables are Difficulty, Choice and Response Time.
 Difficulty represents the discrepancy in flashing rates, choice the judgment made by the participant (correct/incorrect), or missing if no response was made before the deadline.
 Response Time describes the time elapsed from stimulus to response, when a valid response was made respectively.
 
-Each variables level of measurement, range and frequency are listed in Table [tab:variables] of the Appendix.
+
 
 ---
 
@@ -180,7 +180,6 @@ This function stays close to $a$ initially and collapses sharply around $t_{\tex
 In the following subsection, all parameters and their priors are described. They can be grouped into participant-level parameters, condition-level and boundary shape parameters.
 
 Participant-level parameters are fixed for each participant over all settings for difficulty and do not change for different decision boundaries. The priors were selected to be weakly informative but to include plausible ranges for the parameters of the diffusion-models. The positive-normal priors for $v_\text{scale}$ and $t_0$ ensure that the physiologically relevant positive range is sampled, and are able to vary considerably, while the uniform prior for $a_\text{base}$ assumes a lack of prior information and restricts the separation between the boundaries to a plausible range.
-The parameters used are described in Table [tab:part_lev_param](#tab-part_lev_param)
 
 The condition-level parameters are not free priors on their own but are deterministic transformations of the participant-level draw.
 
@@ -197,9 +196,7 @@ The shape parameters of the specific boundary function are defined depending on 
 *Participant-level parameters and their priors. $\mathcal{N}^{+}(\mu,\sigma)$ denotes a normal distribution with mean $\mu$ and standard deviation $\sigma$ truncated to $[0,\infty)$. $\mathcal{U}(0,1)$ denotes the uniform distribution in the interval [0,1].*
 
 Four parameters for the boundary functions are required.
-Their definitions are listed in Table [tab:boundary_lev_param](#tab-boundary_lev_param)
-
-<a id="tab-boundary_lev_param"></a>
+Their definitions are listed as 
 
 | Boundary | Parameter(s) | Meaning | Prior |
 |---|---|---|---|
@@ -209,8 +206,7 @@ Their definitions are listed in Table [tab:boundary_lev_param](#tab-boundary_lev
 
 *Boundary-shape parameters and priors by collapsing-boundary model. $\mathcal{N}^{+}(\mu,\sigma)$ denotes a normal distribution with mean $\mu$ and standard deviation $\sigma$ truncated to $[0,\infty)$.*
 
-Lastly, constant non-prior quantities are defined in Table [tab:fixed_param](#tab-fixed_param).
-
+Lastly, constant non-prior quantities are defined as
 <a id="tab-fixed_param"></a>
 
 | Parameter | Fixed value | Meaning |
@@ -340,10 +336,37 @@ In this Section, the model is fit to the empirical data described in Section [se
 ### 7.1 Fit to real data
 
 As a first step the model is fit to the empirical data for each participant individually.
-In Table [tab:posterior_estimates_exponential] all posterior estimates for the exponential model are listed.
-The estimates for the sigmoid model are available in Table [tab:posterior_estimates_sigmoid] of the Appendix.
+In Table below all posterior estimates for the exponential model are listed.
+The estimates for the sigmoid model are available in Table 
 
-<!-- included table: Report/tables/param_estimates_exponential -->
+| Participant | `a_base` | `lam` | `t0` | `v_scale` |
+|---|---|---|---|---|
+| 0 | 0.11 [0.01, 0.35] | 2.44 [0.99, 4.22] | 0.49 [0.37, 0.60] | 1.13 [0.82, 1.52] |
+| 1 | 0.13 [0.08, 0.22] | 1.50 [0.94, 2.15] | 0.29 [0.22, 0.34] | 1.12 [1.00, 1.24] |
+| 2 | 0.04 [-0.05, 0.19] | 1.92 [0.46, 3.58] | 0.40 [0.29, 0.49] | 1.14 [0.73, 1.63] |
+| 3 | 0.02 [-0.00, 0.03] | 1.86 [1.03, 2.85] | 0.26 [0.23, 0.28] | 1.06 [0.74, 1.41] |
+| 4 | 0.02 [0.01, 0.04] | 1.28 [0.62, 1.94] | 0.09 [0.07, 0.11] | 1.31 [0.80, 1.86] |
+| 5 | 0.07 [0.02, 0.13] | 1.49 [0.79, 2.29] | 0.27 [0.21, 0.33] | 1.09 [0.91, 1.29] |
+| 6 | 0.02 [-0.00, 0.04] | 1.91 [0.97, 2.87] | 0.27 [0.25, 0.30] | 1.08 [0.79, 1.38] |
+| 7 | 0.05 [0.03, 0.06] | 1.57 [1.06, 2.10] | 0.22 [0.20, 0.24] | 1.07 [0.93, 1.22] |
+| 8 | 0.04 [0.02, 0.05] | 1.54 [0.97, 2.14] | 0.20 [0.18, 0.22] | 1.06 [0.87, 1.27] |
+| 9 | 0.09 [0.07, 0.15] | 1.93 [1.31, 2.81] | 0.39 [0.34, 0.43] | 1.12 [1.02, 1.23] |
+| 10 | 0.08 [-0.01, 0.30] | 2.30 [0.87, 4.18] | 0.48 [0.36, 0.57] | 1.12 [0.79, 1.50] |
+| 11 | 0.09 [0.04, 0.18] | 1.86 [1.04, 2.84] | 0.36 [0.29, 0.42] | 1.10 [0.95, 1.26] |
+| 12 | 0.09 [0.05, 0.14] | 1.77 [1.15, 2.56] | 0.35 [0.29, 0.39] | 1.11 [1.00, 1.23] |
+| 13 | 0.03 [0.01, 0.06] | 1.91 [1.01, 3.07] | 0.35 [0.30, 0.39] | 1.10 [0.84, 1.36] |
+| 14 | 0.09 [0.07, 0.12] | 1.29 [0.93, 1.66] | 0.17 [0.14, 0.20] | 1.08 [0.93, 1.24] |
+| 15 | -0.00 [-0.03, 0.02] | 1.58 [0.42, 2.83] | 0.13 [0.11, 0.15] | 1.50 [0.57, 2.38] |
+| 16 | 0.04 [0.02, 0.05] | 1.64 [0.99, 2.37] | 0.25 [0.22, 0.28] | 1.06 [0.87, 1.26] |
+| 17 | 0.08 [0.04, 0.15] | 2.03 [1.09, 3.29] | 0.40 [0.33, 0.46] | 1.10 [0.94, 1.29] |
+| 18 | 0.02 [-0.03, 0.09] | 1.97 [0.72, 3.49] | 0.39 [0.32, 0.46] | 1.13 [0.76, 1.52] |
+| 19 | 0.19 [0.04, 0.55] | 2.15 [0.95, 3.55] | 0.43 [0.28, 0.54] | 1.10 [0.89, 1.33] |
+| 20 | 0.07 [0.03, 0.12] | 1.78 [0.98, 2.78] | 0.35 [0.28, 0.40] | 1.10 [0.95, 1.29] |
+| 21 | 0.01 [-0.01, 0.02] | 1.97 [0.97, 3.06] | 0.27 [0.24, 0.29] | 1.11 [0.69, 1.52] |
+| 22 | 0.05 [0.02, 0.07] | 1.56 [0.95, 2.23] | 0.25 [0.22, 0.29] | 1.07 [0.90, 1.25] |
+| 23 | 0.02 [0.01, 0.03] | 1.87 [1.05, 2.76] | 0.28 [0.26, 0.29] | 1.07 [0.83, 1.34] |
+
+*Posterior estimates for each participant for the exponential decision boundary model.*
 
 ### 7.2 Posterior predictive checks
 

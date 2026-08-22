@@ -105,7 +105,7 @@ For the purpose of this project, only observations with a given deadline and und
 | | |
 |---|---|
 | ![Accuracy by difficulty and cue.](./images/log_time_rt.png) | ![Accuracy by difficulty.](./images/box_plot_accuracy_difficuly.png) |
-| *(a) RT with  difficulty.* | *(b) Accuracy vs difficulty.* |
+| *(a) RT with difficulty.* | *(b) Accuracy vs difficulty.* |
 
 
 For each trial, the recorded variables are Difficulty, Choice and Response Time.
@@ -133,7 +133,7 @@ $$
 
 where $v$ is the drift rate, reflecting stimulus coherence/task difficulty, $\sigma$ is the diffusion noise, which is fixed to $1$, and $dW(t)$ is a Wiener increment.
 A decision is made once $X(t)$ reaches one of two boundaries, $+B(t)$ (correct response) or $-B(t)$ (error response).
-The observed response time is $RT = t_0 + t^{*}$, where $t^{*}$ is the first-passage time and $t_0$ is a non-decision time accounting for encoding and motor execution.
+The observed response time is $RT = t_0 + t^{\ast}$, where $t^{\ast}$ is the first-passage time and $t_0$ is a non-decision time accounting for encoding and motor execution.
 The starting point of accumulation, $z \in (0,1)$, allows for an a-priori bias towards one .
 The different boundary functions are defined in the following section.
 
@@ -193,10 +193,10 @@ The shape parameters of the specific boundary function are defined depending on 
 | $t_0$ | Non-decision time i.e. the portion of RT not attributable to the decision process itself (encoding, motor execution) | $\mathcal{N}^{+}(0.19,\, 0.138)$ |
 | $a_\text{base}$ | Baseline boundary separation, before any condition-specific adjustment; reflects the participant's default response caution [[9]](#ref-9) | $U(0, 1)$ |
 
-*Participant-level parameters and their priors. $\mathcal{N}^{+}(\mu,\sigma)$ denotes a normal distribution with mean $\mu$ and standard deviation $\sigma$ truncated to $[0,\infty)$. $\mathcal{U}(0,1)$ denotes the uniform distribution in the interval [0,1].*
+*Participant-level parameters and their priors. $\mathcal{N}^{+}(\mu,\sigma)$ denotes a normal distribution with mean $\mu$ and standard deviation $\sigma$ truncated to $[0,\infty)$. $\mathcal{U}(0,1)$ denotes the uniform distribution in the interval $[0,1]$.*
 
 Four parameters for the boundary functions are required.
-Their definitions are listed as 
+Their definitions are listed as
 
 | Boundary | Parameter(s) | Meaning | Prior |
 |---|---|---|---|
@@ -247,7 +247,7 @@ The simulator is vectorized/batched over many trials and many prior draws so tha
 
 ## 5. Training
 
-The neural network is trained on simulated data, as described in Chapter [cap:Simulator](#cap-Simulator), to learn the posterior distribution of the model parameters $\theta$ given the observed data.
+The neural network is trained on simulated data, as described in [Section 4.1](#41-simulator), to learn the posterior distribution of the model parameters $\theta$ given the observed data.
 Therefore, the analysis uses the Python package `bayesflow`, version 2.0.12 [[11]](#ref-11).
 
 For this purpose, some simplifying assumptions are necessary. The observations are assumed to be independent, and individual differences between participants are disregarded.
@@ -258,7 +258,7 @@ The neural network uses a `SetTransformer` as the summary network and a `Couplin
 The coupling layers are interleaved, and `SwiGLU` is used as the activation function.
 The model is trained for 30 epochs, with 32 batches per epoch and a batch size of 50 in an online format.
 
-The model is trained once for the exponential and once for sigmoid decision boundary as described in Section [subsec:model_boundary](#subsec-model_boundary).
+The model is trained once for the exponential and once for sigmoid decision boundary as described in [Section 3.2](#32-boundary-functions).
 
 ---
 
@@ -266,13 +266,13 @@ The model is trained once for the exponential and once for sigmoid decision boun
 
 After training the model, its validity must be assessed.
 In the following section, the validity of the model with an exponential decision boundary is assessed in detail.
-The figures for assessing the validity of the model with a sigmoid decision boundary are available in the Appendix on page [fig:TODO].
+The figures for assessing the validity of the model with a sigmoid decision boundary are available in the [Appendix](#9-appendix).
 First, the convergence is checked with a diagnostics loss chart.
 Afterwards, the recovery and coverage rates are visualized and assessed.
 
 ### 6.1 Convergence
 
-The loss in regard to the amount of trainig epochs is shown in Figure [fig:loss_exponential](#fig-loss_exponential).
+The loss in regard to the amount of trainig epochs is shown in [the figure below](#fig-loss_exponential).
 It is used to indicate whether a sufficient amount of epochs are used for the training.
 The amount is enough when the moving average of the traing (grey) an the theoretical loss if the training (blue) approach. In this case it is given beginning with 21 epochs.
 At the amount of 30 epochs they convert to each other. Therfore 30 epochs is a sufficient to proceed with the next steps.
@@ -288,30 +288,28 @@ At the amount of 30 epochs they convert to each other. Therfore 30 epochs is a s
 The next step is to have a look at the recovery rate.
 It serves as a measure of the extent to which the underlying decision boundary can be successfully restored after it has collapsed.
 They show the ground truth on the x-axis and the estimated value on the y-axis this has the effect that ideally the values would be on the diagonal.
-These are provided in Figure [fig:recovery_exponentail](#fig-recovery_exponential) for the parameters of the exponential decision boundary model: $v_{scale}$, $t_0$, $a_{base}$ and $\lambda$.
+These are provided in [the figure below](#fig-recovery_exponential) for the parameters of the exponential decision boundary model: $v_{scale}$, $t_0$, $a_{base}$ and $\lambda$.
 The diagonal trend is mostly given for $v_{scale}$ and $t_0$.
 For small values of $a_{base}$ the estimated value is very equal as well but for values greater than 0.02 the prediction an Estimate differ. In this context, the value is often significantly overestimated and only rarely significantly underestimated. Estimates less than 0.2 are very unusual for true values greater than 0.02.
 The estimater for $\lambda$ seems mostly random regardless the true value.
 
-In Figure [TODO] of the Appendix, it is shown that the recovery rates for the sigmoid model is worse but stillfg TODO after simulation is done [[12]](#ref-12)
+In the [recovery figure for the sigmoid model](#fig-recovery_sigmoid) in the Appendix, it is shown that the recovery rates for the sigmoid model is worse [[12]](#ref-12).
 
 <a id="fig-recovery_exponential"></a>
 
 ![Recovery rate for the exponential decision boundary model.](./images/recovery_exponential.png)
 
-*Recovery rate of $v\_scale$, $t_0$, $a\_base$ and $\lambda$ for the exponential decision boundary model.*
+*Recovery rate of $v_\text{scale}$, $t_0$, $a_\text{base}$ and $\lambda$ for the exponential decision boundary model.*
 
 ### 6.3 Coverage plots
 
-Before the trained neural network is applied to the empirical data, the performance and calibration must first be verified using simulated data. This is to ensure that the model can reliably reconstruct the underlying parameters and provide appropriate uncertainty intervals. To this end, coverage plots are used to verify whether the posterior confidence or credibility intervals achieve the expected coverage probabilities [[13]](#ref-13). For the parameter: $v_{scale}$, $t_0$, $a$ and $s_v$ is in Figure [abb:coveragePlotAlt](#abb-coveragePlotAlt).
+Before the trained neural network is applied to the empirical data, the performance and calibration must first be verified using simulated data. This is to ensure that the model can reliably reconstruct the underlying parameters and provide appropriate uncertainty intervals. To this end, coverage plots are used to verify whether the posterior confidence or credibility intervals achieve the expected coverage probabilities [[13]](#ref-13). For the parameter: $v_{scale}$, $t_0$, $a$ and $s_v$ is in [the figure below](#abb-coveragePlotAlt).
 
 <a id="abb-coveragePlotAlt"></a>
 
 ![Coverage plots for true and estimated parameters](./images/calibration_exponential.png)
 
 *Coverage plots for true and estimated parameters [[12]](#ref-12)*
-
-text may change reagrding the plot and runtime
 
 The x-axis shows the fractional rank statistic, which represents the normalized rank of the true parameter relative to samples from the estimated posterior distribution. The y-axis shows the difference between the empirical cumulative distribution function (ECDF) of the observed functional ranks and the theoretical cumulative distribution function (TCDF) of the expected uniform distribution of ranks [[14]](#ref-14). The difference of these two are used because deviations are often easier to identify by subtracting the expected uniform behavior from the empirical cumulative distribution function [[15]](#ref-15).
 
@@ -331,13 +329,12 @@ After validation of the model, it can be used for inference.
 
 ## 7. Inference
 
-In this Section, the model is fit to the empirical data described in Section [sec:data](#sec-data). The results are further discussed using posterior predictive checks.
+In this Section, the model is fit to the empirical data described in [Section 2](#2-data). The results are further discussed using posterior predictive checks.
 
 ### 7.1 Fit to real data
 
 As a first step the model is fit to the empirical data for each participant individually.
-In Table below all posterior estimates for the exponential model are listed.
-The estimates for the sigmoid model are available in Table 
+In the table below all posterior estimates for the exponential model are listed.
 
 | Participant | `a_base` | `lam` | `t0` | `v_scale` |
 |---|---|---|---|---|
@@ -371,30 +368,31 @@ The estimates for the sigmoid model are available in Table
 ### 7.2 Posterior predictive checks
 
 As a final step, posterior predictive checks (PPC) are performed to compare the differences between the predicted and actual data and to demonstrate how well or poorly the model performs.
-Figure [fig:ppc_exponential_2_7](#fig-ppc_exponential_2_7) compares a histogram of the empirical and simulated distributions for two exemplary participants.
-The PPC for all participants are made available in Figure [fig:ppc_exponential_all](#fig-ppc_exponential_all) in the Appendix.
+[The figure below](#fig-ppc_exponential_2_7) compares a histogram of the empirical and simulated distributions for two exemplary participants.
+The PPC for all participants are made available in [the Appendix](#fig-ppc_exponential_all).
 
 <a id="fig-ppc_exponential_2_7"></a>
 
 ![Posterior predictive checks for expample participants](./images/ppc_participant_2_7.png)
 
-*Posterior predictive checks for participant 2 and 7 as examplary visualizations. Figures for all participants are made available in the Appendix in Figure [fig:ppc_exponential_all](#fig-ppc_exponential_all).*
+*Posterior predictive checks for participant 2 and 7 as examplary visualizations. Figures for all participants are made available in the [Appendix](#fig-ppc_exponential_all).*
 
 Notably, the distributions of both participants are not equal.
 Therefore, the PPC does not yield the same results for all participants.
 Specifically, the results for participant two do not support the hypothesis of an underlying exponential decision boundary, whereas the fot for participant seven is more consistent with this hypothesis.
 
-The PPC is also performed for the sigmoid decision boundary in Figure [fig:ppc_sigmoid_2_7](#fig-ppc_sigmoid_2_7).
+The PPC is also performed for the sigmoid decision boundary in [the figure below](#fig-ppc_sigmoid_2_7).
 
 <a id="fig-ppc_sigmoid_2_7"></a>
 
 ![Posterior predictive checks for participant 2 and 7](./images/ppc_sigmoid_participant_2_7.png)
 
-*Posterior predictive checks for participant 2 and 7 as exemplary visualizations. Figures for all participants are made available in the Appendix in Figure [fig:ppc_sigmoid_all](#fig-ppc_sigmoid_all)*
+*Posterior predictive checks for participant 2 and 7 as exemplary visualizations. Figures for all participants are made available in the [Appendix](#fig-ppc_sigmoid_all).*
 
 ---
 
 ## 8. Discussion & Conclusion
+
 Will be finalized and written by paula esther
 
 ---
@@ -430,7 +428,7 @@ Will be finalized and written by paula esther
 
 <a id="tab-posterior"></a>
 
-*Relative frequencies of binary varibales of the data set, for* deadline*: "deadline" (1) "No Deadline" (0),* cue*: "AC" (0), "SP" (1)*
+*Relative frequencies of binary varibales of the data set, for _deadline_: "deadline" (1), "No Deadline" (0), _cue_: "AC" (0), "SP" (1)*
 
 | Variable | 0 | 1 |
 |---|---|---|
@@ -468,14 +466,12 @@ Will be finalized and written by paula esther
 
 *Coverage plots for true and estimated parameters.*
 
-![Posterio predictive checks for every participant using exponential decision boundary model.](./images/ppc_exponential_all.png)
-
-*Posterio predictive checks for every participant using exponential decision boundary model.*
-
 <a id="fig-ppc_sigmoid_all"></a>
 
 ![Posterior predictive checks for every participant using sigmoid decision boundary model.](./images/ppc_sigmoid_all.png)
 
 *Posterior predictive checks for every participant using sigmoid decision boundary model.*
+
+---
 
 *Thank You! By [@dhakalmahima188](https://github.com/dhakalmahima188/) (Mahima Dhakal), [@paulalorr](https://github.com/paulalorr/) (Paula), [@bseskafle](https://github.com/bseskafle/) (Bishesh Kafle), and [@Es-T-H-er](https://github.com/Es-T-H-er/) (Esther)*

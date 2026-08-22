@@ -145,9 +145,9 @@ Evidence $X(t)$ accumulates according to the stochastic differential equation
 
 $$dX(t) = v\,dt + \sigma\,dW(t)$$
 
-- $v$ — drift rate, reflecting stimulus discriminability / task difficulty
-- $\sigma$ — diffusion noise, fixed to 1
-- $dW(t)$ — Wiener increment
+- $v$ : drift rate, reflecting stimulus discriminability / task difficulty
+- $\sigma$ : diffusion noise, fixed to 1
+- $dW(t)$ : Wiener increment
 
 A decision is made once $X(t)$ reaches $+B(t)$ (correct) or $-B(t)$ (error). The observed response time is $RT = t_0 + t^{*}$, where $t^{*}$ is the first-passage time and $t_0$ the non-decision time (encoding + motor execution). The starting point $z \in (0,1)$ allows an a-priori bias toward one boundary.
 
@@ -222,20 +222,6 @@ starting from $X_0 = (z - 0.5)\cdot 2a$.
 
 > **Analogy:** a video game cannot run physics continuously, so it recalculates positions ~60 times per second. Here we recalculate ~500 times per second (`dt = 0.002 s`). Smaller `dt` means a more faithful approximation but more computation.
 
-### Parameterization of condition effects
-
-Two designs were considered; **B is implemented**.
-
-| Approach | Description |
-|---|---|
-| **A. Per-cell free priors (null baseline)** | Each (participant × cue × deadline) cell draws its own parameters independently from shared priors with **no** built-in cue/deadline effect. Any condition difference in the resulting data is emergent noise, useful to sanity-check that the pipeline does not manufacture spurious effects. |
-| **B. Cue → $a$, deadline → collapse rate (implemented)** | Mirrors the empirical dissociation from Katsimpokis et al. directly in the generative model: cue shifts the initial boundary separation $a$ (±0.15, accuracy wider / speed narrower), and `has_deadline` shifts the collapse-rate parameter ($k$ / $\lambda$ / $k_\text{sig}$) toward the steeper half of its prior range. The sigmoid inflection time $t_\text{mid}$ is deliberately left unaffected, since the paper's dissociation concerns the *rate* of collapse, not its *timing*. |
-
-`sample_cell_priors(rng, model, cue=None, has_deadline=None)`, passing `cue=None, has_deadline=None` recovers Approach A for ablation. The BayesFlow-facing `prior()` always samples `cue` / `has_deadline` as known design variables and threads them through `sample_cell_priors`, so the training simulator inherits the same dissociation as the exploratory dataset produced by `simulate_full_dataset`.
-
-> **Note:** the ±0.15 cue shift and the "steeper half" deadline shift are *fixed* effect sizes, not inferable parameters, a chosen ground truth for generating synthetic validation data. If the goal becomes recovering the *size* of these effects, promote them to free parameters with their own priors.
-
----
 
 ## 6. Approximator & Training
 
@@ -395,3 +381,5 @@ Trained approximators and posterior draws are cached with `pickle`; delete the c
 - Hawkins, G. E., Forstmann, B. U., Wagenmakers, E.-J., Ratcliff, R., & Brown, S. D. (2015). *Revisiting the evidence for collapsing boundaries and urgency signals in perceptual decision-making.* Journal of Neuroscience, 35(6), 2476–2484.
 - Higham, D. J. (2001). *An algorithmic introduction to numerical simulation of stochastic differential equations.* SIAM Review, 43(3), 525–546.
 - Radev, S. T., et al. (2023). *BayesFlow: Amortized Bayesian workflows with neural networks.* Journal of Open Source Software. — [Docs](https://bayesflow.org/v2.0.12/index.html)
+
+*Thank You! By [@dhakalmahima188](https://github.com/dhakalmahima188/) (Mahima Dhakal), [@paulalorr](https://github.com/paulalorr/) (Paula), [@bseskafle](https://github.com/bseskafle/) (Bishesh Kafle), and [@Es-T-H-er](https://github.com/Es-T-H-er/) (Esther)*

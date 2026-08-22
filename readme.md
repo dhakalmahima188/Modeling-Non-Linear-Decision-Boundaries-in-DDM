@@ -119,16 +119,16 @@ Marginal summaries:
 <tr>
 <td width="50%">
 
-![Accuracy by difficulty and cue](./images/accuracy_by_difficulty_and_cue.png)
+![Accuracy by difficulty and cue](./images/box_plot_accuracy_difficuly.png)
 
-*Accuracy as a function of difficulty across speed/deadline cues.*
+*Accuracy as a function of difficulty across difficulty.*
 
 </td>
 <td width="50%">
 
-![Speed–accuracy trade-off](./images/speed_accuracy_tradeoff.png)
+![Speed–accuracy trade-off](./images/log_time_rt.png)
 
-*The speed–accuracy trade-off.*
+*The log reaction time vs difficulty.*
 
 </td>
 </tr>
@@ -318,12 +318,8 @@ After replacing the uniform $t_0$ prior with the truncated normal ($\mathcal{N}^
 ---
 
 ## 9. Discussion & Conclusion
+BY paula and Esther
 
-- An **exponential collapsing boundary combined with a better-specified $t_0$ prior** is a viable model for these data; posterior predictive distributions track the empirical RT distribution reasonably well once the non-decision-time prior no longer imposes an artificial floor.
-- The strongest caveat is that **$\lambda$ does not recover**. The parameter that carries the entire research question is the one the network cannot identify from the current summary statistics, so claims about the *shape* of collapse should be made cautiously.
-- $v_\text{scale}$ shows a calibration problem in the SBC checks; its credible intervals should not be read at face value.
-- A full **model comparison against fixed and linear boundaries** on the same footing remains the obvious next step. Without it, "exponential fits well" is not yet "exponential fits *better*."
-- The model **ignores participant-level differences and cue effects**, and is trained on a subset of the data (deadline + speed instruction only). Adding hierarchical structure would allow the full dataset to be used and would likely improve identifiability of the shape parameters.
 
 ---
 

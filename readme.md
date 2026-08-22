@@ -101,16 +101,12 @@ Under accuracy instruction, they are instructed to respond as accurate as possib
 Furthermore, the task was either performed under a hard deadline or no deadline given.
 For the purpose of this project, only observations with a given deadline and under speed instruction are included.
 
-![Log response time difference](./images/log_time_rt.png)
-
-<a id="fig-data_overview"></a>
 
 | | |
 |---|---|
-| ![Accuracy by difficulty and cue.](./images/accuracy_by_difficulty_and_cue.png) | ![Accuracy by difficulty.](./images/box_plot_accuracy_difficuly.png) |
-| *(a) Accuracy by difficulty and cue.* | *(b) Accuracy by difficulty.* |
+| ![Accuracy by difficulty and cue.](./images/log_time_rt.png) | ![Accuracy by difficulty.](./images/box_plot_accuracy_difficuly.png) |
+| *(a) RT with  difficulty.* | *(b) Accuracy vs difficulty.* |
 
-*Behavioural patterns in the RDK dataset: accuracy as a function of motion difficulty across speed/deadline cues (left) and accuracy by difficulty (right).*
 
 For each trial, the recorded variables are Difficulty, Choice and Response Time.
 Difficulty represents the discrepancy in flashing rates, choice the judgment made by the participant (correct/incorrect), or missing if no response was made before the deadline.

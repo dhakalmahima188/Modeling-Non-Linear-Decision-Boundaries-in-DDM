@@ -1,21 +1,21 @@
 from functions.likelihood import likelihood
+from functions.get_param_order import get_param_order
 from constants import MODEL_NAMES
 import numpy as np
 
 def resimulate_from_posterior(posterior_draws, model="exponential",
                               difficulty_idx=0, n_resim=100, seed=None,
                               shape_kwargs=None):
+    model = model or MODEL_NAMES[0]
+    param_order = get_param_order(model)
+    n_params = len(param_order)
+ 
     rng = np.random.default_rng(seed)
-    shape_kwargs = shape_kwargs or {"lam": 2.5, "k_sig": 5.0, "t_mid": 0.8}
-
     idxs = rng.choice(len(posterior_draws),
-                    size=min(n_resim, len(posterior_draws)), replace=False)
+                       size=min(n_resim, len(posterior_draws)), replace=False)
+ 
     out = []
     for i in idxs:
-        v_scale_i, t0_i, a_base_i, lam_i = posterior_draws[i, :4]
-        out.append(likelihood(
-            model_idx=MODEL_NAMES.index(model),
-            v_scale=v_scale_i, t0=t0_i, a_base=a_base_i,
-            **shape_kwargs
-        ))
+        values = dict(zip(param_order, posterior_draws[i, :n_params]))
+        out.append(likelihood(model_idx=MODEL_NAMES.index(model), **values))
     return out

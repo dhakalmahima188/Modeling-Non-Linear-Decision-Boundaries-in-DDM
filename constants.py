@@ -1,4 +1,4 @@
-MODEL_NAMES = [ "exponential"  ]
+MODEL_NAMES = ["sigmoid"]
 
 DT = 0.002
 MAX_TIME = 3.0
@@ -8,6 +8,7 @@ FLASH_PAIRS = [
     (0.70, 0.30), (0.75, 0.25), (0.80, 0.20),
 ]
 
+BASE_PARAMS = ("v_scale", "t0", "a_base")
 
 COHERENCES = tuple(round(p1 - p2, 2) for p1, p2 in FLASH_PAIRS)
 

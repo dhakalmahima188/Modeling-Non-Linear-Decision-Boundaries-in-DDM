@@ -5,7 +5,7 @@ from functions.simulate_cell import simulate_cell
 
 def likelihood(model_idx, v_scale, t0, a_base, **shape_kwargs):
     rng = np.random.default_rng()
-    model = MODEL_NAMES[int(model_idx)]
+    model = MODEL_NAMES[0]
 
     needed = SHAPE_PRIOR_RANGES[model]
     params = {"v_scale": v_scale, "t0": t0, "a_base": a_base,

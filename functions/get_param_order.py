@@ -9,4 +9,3 @@ def get_param_order(model):
         return BASE_PARAMS + tuple(SHAPE_PRIOR_RANGES[model])
     else:
         return BASE_PARAMS + SHAPE_PRIOR_RANGES[model]
-

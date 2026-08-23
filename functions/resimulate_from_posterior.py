@@ -17,5 +17,5 @@ def resimulate_from_posterior(posterior_draws, model="exponential",
     out = []
     for i in idxs:
         values = dict(zip(param_order, posterior_draws[i, :n_params]))
-        out.append(likelihood(model_idx=MODEL_NAMES.index(model), **values))
+        out.append(likelihood(model_idx=0, **values))
     return out

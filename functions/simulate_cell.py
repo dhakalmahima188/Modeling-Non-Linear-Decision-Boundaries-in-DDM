@@ -22,8 +22,8 @@ def simulate_cell(
     """
     Simulate one participant under one experimental condition.
 
-    The boundary is shared across all coherence levels.
-    Only the drift rate changes with coherence.
+    The boundary is shared across all difficulty levels.
+    Only the drift rate changes with difficulty.
 
     Parameters
     ----------

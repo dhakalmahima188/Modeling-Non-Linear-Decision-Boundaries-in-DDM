@@ -42,7 +42,7 @@ python3.13 -m venv .venv
 source .venv/bin/activate
 
 # Windows
-will be written by paula/esther
+Please Google !
 ```
 
 Install dependencies:
@@ -392,8 +392,13 @@ The PPC is also performed for the sigmoid decision boundary in [the figure below
 ---
 
 ## 8. Discussion & Conclusion
+Overall, this simulation study investigated how the collapse of decision boundaries can be modelled using two different functional forms: a sigmoid and an exponential function. The aim is to extend the approach of the original research. After building a model on simulated data in the same schema as the original data from the paper "Not all Speed-Accuracy Trade-Off Manipulations Have the Same Psychological Effect", this data is then used for posterior predictive checks to assess how well the model is able to reproduce the relevant characteristics of the simulated data. The analysis shows that, on average, the exponential function substantially outperformed the sigmoid function.
 
-Will be finalized and written by paula esther
+However, the drift rate $v_{\text{scale}}$ is not captured adequately by the model. In contrast, the other parameters are approximated well for both functions. In retrospect, the models can be improved by further optimising the priors chosen and increasing the number of batches per epoch and their size. Due to computational cost, this was not done here.
+
+In further research, comparing the two functions with additional functions, such as the Weibull or the logarithmic function, could provide a broader range of possibilities for modelling collapsing decision boundaries. Such an exploratory analysis could help determine whether the observed differences between the sigmoid and exponential functions are specific to these two functional forms or reflect more general differences between classes of functions.
+
+If the findings remain consistent across the functional forms, further research with more detailed data could be of interest. On the one hand, this could involve increasing the number of participants in the study. On the other hand, incorporating more individual information regarding the participants, like age, sex, or job title, could be valuable. Another possible approach to improving the models could be through including a learning effect into the data, which is already provided in the original analysis.
 
 ---
 

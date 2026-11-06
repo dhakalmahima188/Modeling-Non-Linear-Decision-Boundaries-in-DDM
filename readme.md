@@ -44,7 +44,7 @@ source .venv/bin/activate
 # Windows (PowerShell)
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-( Cant promise if the windows syntax works, please google !)
+# ( Cant promise if the windows syntax works, please google !)
 ```
 
 Install dependencies:

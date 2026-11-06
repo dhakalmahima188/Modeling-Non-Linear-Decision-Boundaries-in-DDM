@@ -41,8 +41,10 @@ source .venv/bin/activate
 python3.13 -m venv .venv
 source .venv/bin/activate
 
-# Windows
-Please Google !
+# Windows (PowerShell)
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+( Cant promise if the windows syntax works, please google !)
 ```
 
 Install dependencies:
